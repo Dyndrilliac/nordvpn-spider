@@ -1,19 +1,22 @@
 import scrapy
+import json
+import sys
+
 
 class NordVPNSpider(scrapy.Spider):
-    name = "nordvpn"
+    name = "nordvpn_spider"
+    url = "https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations&filters={%22country_id%22:228,%22servers_groups%22:[11]}"
+    server_recommendations = None
+    optimal_server = None
 
     def start_requests(self):
-        urls = [
-            'https://nordvpn.com/servers/tools/',
-        ]
-
-        for url in urls:
-            yield scrapy.Request(url=url, callback=self.parse)
+        yield scrapy.Request(url=self.url, callback=self.parse)
 
     def parse(self, response):
-        page = response.url.split("/")[-2]
-        filename = 'server-%s.html' % page
-        with open(filename, 'wb') as f:
-            f.write(response.body)
-        self.log('Saved file %s' % filename)
+        try:
+            self.server_recommendations = json.loads(response.text)
+            self.optimal_server = self.server_recommendations[0]['hostname']
+        except:
+            print("Unexpected Error: ", sys.exc_info()[0])
+        else:
+            print(self.optimal_server)
