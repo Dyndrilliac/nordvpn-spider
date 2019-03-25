@@ -4,7 +4,7 @@ import sys
 
 class NordVPNSpider(scrapy.Spider):
     name = "nordvpn_spider"
-    url = "https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations&filters={%22country_id%22:228,%22servers_groups%22:[11]}"
+    url = "https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations&filters={%22country_id%22:228,%22servers_groups%22:[17],%22servers_technologies%22:[15]}"
 
     def __init__(self, isSilent = False):
         self.isSilent = isSilent
