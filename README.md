@@ -38,8 +38,7 @@ nordvpn_optimize () {
 	# To make it quiet, pass the -silent argument.
 	isSilent=0
 	# Handle function arguments appropriately.
-	if [[ $# -gt 0 ]]
-	then
+	if [[ $# -gt 0 ]] ; then
 		for arg in $@
 		do
 			case "$arg" in
@@ -52,10 +51,8 @@ nordvpn_optimize () {
 		done
 	fi
 	# Get the server hostname using nordvpn_scraper.
-	command="nordvpn_scraper"
-	result=$(eval $command)
-	if [[ $isSilent != 1 ]]
-	then
+	result=$(eval "nordvpn_scraper")
+	if [[ $isSilent != 1 ]] ; then
 		# Print the server to standard output.
 		# The spider would ordinarily do this by default, but we are capturing the spider's natural output for use in this script.
 		echo $result
@@ -65,25 +62,11 @@ nordvpn_optimize () {
 	# Example:
 	# 	nordvpn c us2227
 	# This means that we have to split off the information we need from the hostname provided by the spider.
-	# Split the $result string into an array of strings called $pieces using the period as the delimiter.	
-	pieces=$(echo $result | tr "." "\n")
-	# Now we want only the first piece.
-	server=""
-	counter=0
-	for piece in $pieces
-	do
-		# Print the current piece.
-		if [[ $isSilent != 1 ]]
-		then
-			echo "$piece"
-		fi
-		# Grab the first element of the array.
-		if [[ $counter == 0 ]]
-		then
-			server=$piece
-			break
-		fi
-	done
+	server=$(echo "$result" | cut -d "." -f 1)
+	if [[ $isSilent != 1 ]] ; then
+		# Print the piece of the hostname we want to standard output.
+		echo "$server"
+	fi
 	# Finally, we can now connect to the desired NordVPN server.
 	nordvpn c $server
 }
