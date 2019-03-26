@@ -12,7 +12,7 @@ This project is intended for use with [NordVPN's CLI Linux client](https://suppo
 
 # CLI Usage
 
-When executed from the a command-line interface, the spider will provide the optimal server's hostname to the user via standard output.
+When executed from a command-line interface, the spider will provide the optimal server's hostname to the user via standard output.
 
 * From repository root directory:
     * ``scrapy crawl --nolog nordvpn_spider``
@@ -29,7 +29,7 @@ For maximum effect, I recommend the following additions to `~/.bashrc` or `~/.ba
 # Define the $GITHUB environment variable.
 export GITHUB="$HOME/Documents/Git/GitHub"
 
-# Create a bash shortcut called 'nordvpn_scraper' for running the spider's python script using scrapy.
+# Create a shortcut called 'nordvpn_scraper' for running the spider's python script using scrapy.
 alias nordvpn_scraper="scrapy runspider --nolog $GITHUB/nordvpn-spider/nordvpn_spider/spiders/nordvpn_spider.py"
 
 # Define a function to automatically connect to the optimal NordVPN server.
