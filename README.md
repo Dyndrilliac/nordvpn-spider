@@ -24,7 +24,7 @@ On my machine, I have the ``$GITHUB`` environment variable defined as:
 export GITHUB="$HOME/Documents/Git/GitHub"
 ```
 
-For maximum effect, I recommend the following addition to `~/.bashrc`:
+For maximum effect, I recommend the following additions to `~/.bashrc` or `~/.bash_profile` as appropriate:
 ```shell
 # Define the $GITHUB environment variable.
 export GITHUB="$HOME/Documents/Git/GitHub"
@@ -35,14 +35,14 @@ alias nordvpn_scraper="scrapy runspider --nolog $GITHUB/nordvpn-spider/nordvpn_s
 # Define a function to automatically connect to the optimal NordVPN server.
 nordvpn_optimize () {
 	# This script will print intermediate output by default for debugging purposes.
-	# To make it quiet, pass the -silent argument.
+	# To make it quiet, pass the -silent (or -s) argument.
 	isSilent=0
 	# Handle function arguments appropriately.
 	if [[ $# -gt 0 ]] ; then
 		for arg in $@
 		do
 			case "$arg" in
-				-silent)
+				-silent|-s)
 					isSilent=1
 					;;
 				*)
@@ -72,7 +72,7 @@ nordvpn_optimize () {
 }
 ```
 
-With this function, you can automatically connect to the optimal NordVPN server using the simple ``nordvpn_optimize -silent`` command.
+With this function, you can automatically connect to the optimal NordVPN server using the simple ``nordvpn_optimize -s`` command. This process can also be automated to occur at login. While the NordVPN Linux client does have an autoconnect feature, it does not appear to choose the optimal server. It seems to choose one at random, which I personally found to be unacceptable - and is ultimately what prompted the creation of this project.
 
 # Python Usage
 
