@@ -24,7 +24,7 @@ On my machine, I have the ``$GITHUB`` environment variable defined as:
 export GITHUB="$HOME/Documents/Git/GitHub"
 ```
 
-For maximum effect, I have also included in this repository a simple shell script to invoke [NordVPN's CLI Linux client](https://support.nordvpn.com/Connectivity/Linux/1182453582/Installing-and-using-NordVPN-on-Linux.htm) and pass along the optimal server.
+For maximum effect, I have also included in this repository a simple shell script called ``nordvpn_optimizer.sh`` to invoke [NordVPN's CLI Linux client](https://support.nordvpn.com/Connectivity/Linux/1182453582/Installing-and-using-NordVPN-on-Linux.htm) and pass along the optimal server.
 
 I recommend making the following additions to ``~/.bash_aliases`` or ``~/.bashrc`` as appropriate:
 ```shell
@@ -34,7 +34,7 @@ alias nordvpn_scraper="scrapy runspider --nolog $GITHUB/nordvpn-spider/nordvpn_s
 alias nordvpn_optimizer="$GITHUB/nordvpn-spider/nordvpn_optimizer.sh"
 ```
 
-With these modifications, you can automatically connect to the optimal NordVPN server using the simple ``nordvpn_optimizer -s`` command. This process can also be automated to occur at login. While the NordVPN Linux client does have an autoconnect feature, it does not appear to choose the optimal server. Instead, it seems to choose one at random. I personally found this behavior to be unacceptable, and is ultimately what prompted the creation of this project. To automatically connect to the optimal NordVPN server during login, simply add the following to the bottom of your ``~/.profile`` or ``~/.bash_profile`` as appropriate:
+With these modifications, you can automatically connect to the optimal NordVPN server within a terminal window using the simple ``nordvpn_optimizer -s`` command. This process can also be automated to occur at login. While the NordVPN Linux client does have an autoconnect feature, it does not appear to choose the optimal server. Instead, it seems to choose one at random. I personally found this behavior to be unacceptable, and it is ultimately what prompted the creation of this project. To automatically connect to the optimal NordVPN server during login, simply add the following to the bottom of your ``~/.profile`` or ``~/.bash_profile`` as appropriate:
 ```shell
 # Automatically connect to the optimal NordVPN server during login.
 if [ -f "$GITHUB/nordvpn-spider/nordvpn_optimizer.sh" ] ; then
