@@ -29,7 +29,7 @@ For maximum effect, I have also included in this repository a simple shell scrip
 I recommend making the following additions to ``~/.bash_aliases`` or ``~/.bashrc`` as appropriate:
 ```shell
 # Enable quick access to my custom python script for grabbing the optimal NordVPN server.
-alias nordvpn_scraper="scrapy runspider --nolog $GITHUB/nordvpn-spider/nordvpn_spider/spiders/nordvpn_spider.py"
+alias nordvpn_spider="scrapy runspider --nolog $GITHUB/nordvpn-spider/nordvpn_spider/spiders/nordvpn_spider.py"
 # Enable quick access to my custom shell script for invoking the NordVPN CLI Linux client.
 alias nordvpn_optimizer="$GITHUB/nordvpn-spider/nordvpn_optimizer.sh"
 ```
