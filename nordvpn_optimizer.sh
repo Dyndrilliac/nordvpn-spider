@@ -15,7 +15,7 @@ if [[ $# -gt 0 ]] ; then
 		esac
 	done
 fi
-# Get the server hostname using nordvpn_scraper.
+# Get the server hostname using nordvpn_spider.
 result=$(eval "scrapy runspider --nolog $GITHUB/nordvpn-spider/nordvpn_spider/spiders/nordvpn_spider.py")
 if [[ $isSilent != 1 ]] ; then
 	# Print the server to standard output.
