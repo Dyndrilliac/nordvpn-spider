@@ -34,7 +34,7 @@ On my machine, I have the ``$GITHUB`` environment variable defined as:
 export GITHUB="$HOME/Documents/Git/GitHub"
 ```
 
-For maximum effect, I have also included in this repository a simple shell script called ``nordvpn_optimizer.sh`` to invoke [NordVPN's CLI Linux client](https://support.nordvpn.com/Connectivity/Linux/1182453582/Installing-and-using-NordVPN-on-Linux.htm) and pass along the optimal server.
+For maximum effect, I have also included in this repository a [simple shell script](https://github.com/Dyndrilliac/nordvpn-spider/blob/master/nordvpn_optimizer.sh) called ``nordvpn_optimizer.sh`` to invoke [NordVPN's CLI Linux client](https://support.nordvpn.com/Connectivity/Linux/1182453582/Installing-and-using-NordVPN-on-Linux.htm) and pass along the optimal server.
 
 I recommend making the following additions to ``~/.bash_aliases`` or ``~/.bashrc`` as appropriate:
 ```shell
