@@ -68,7 +68,6 @@ class NordVPNSpider(scrapy.Spider):
         #       * Example UDP arg string in United States: "&filters={%22country_id%22:228,%22servers_groups%22:[17],%22servers_technologies%22:[15]}"
         #       * Example TCP arg string in United States: "&filters={%22country_id%22:228,%22servers_groups%22:[17],%22servers_technologies%22:[17]}"
         # Initialize variables.
-        arg_string = "&filters={%22country_id%22:"
         country_id_arg = self.get_country_id()
         servers_groups_arg = None
         servers_techs_arg = None
@@ -88,7 +87,7 @@ class NordVPNSpider(scrapy.Spider):
             else:
                 servers_techs_arg = 17
         # Generate the arg_string.
-        arg_string = arg_string + str(country_id_arg) + ",%22servers_groups%22:[" + str(servers_groups_arg) + "],%22servers_technologies%22:[" + str(servers_techs_arg) + "]}"
+        arg_string = "&filters={%22country_id%22:" + str(country_id_arg) + ",%22servers_groups%22:[" + str(servers_groups_arg) + "],%22servers_technologies%22:[" + str(servers_techs_arg) + "]}"
         # Modify the url.
         new_url = url + arg_string
         # Return the modified url.
@@ -97,13 +96,12 @@ class NordVPNSpider(scrapy.Spider):
     def get_country_id(self):
         # Note some useful constants.
         new_country_id = 227 # 227 = United Kingdom
-        new_country_id = 228 # 228 = United States
+        new_country_id = 228 # 228 = United States of America
         # Main algorithm
         #
         
         #
         # Pick country id.
         country_id = new_country_id
-        # Print the country id.
-        print(country_id)
+        #print(country_id)
         return country_id
