@@ -8,7 +8,17 @@
 
 A simple single-purpose spider written in Python to crawl [NordVPN's website](https://nordvpn.com/servers/tools/) and extract the optimal VPN server. Created using [Scrapy](https://scrapy.org/).
 
-This project is intended for use with [NordVPN's CLI Linux client](https://support.nordvpn.com/Connectivity/Linux/1182453582/Installing-and-using-NordVPN-on-Linux.htm), although it could also be used in conjunction with [OpenVPN](https://nordvpn.com/tutorials/linux/openvpn/) as well.
+This project is intended for use with [NordVPN's CLI Linux client](https://support.nordvpn.com/Connectivity/Linux/1182453582/Installing-and-using-NordVPN-on-Linux.htm), although it could also be used in conjunction with [OpenVPN](https://nordvpn.com/tutorials/linux/openvpn/) as well. Currently the spider supports the following 4 configuration options:
+* Standard VPN: OpenVPN UDP.
+* Standard VPN: OpenVPN TCP.
+* Obfuscated VPN: Obfuscated UDP.
+    * **NOTE**: Obfuscated UDP is the default option.
+* Obfuscated VPN: Obfuscated TCP.
+
+Currently you must hardcode your configuration choice into the spider. To choose between them, you should modify line 18 of ``nordvpn_spider.py``:
+```python
+    def __init__(self, isSilent = False, obfuscated = True, udp = True):
+```
 
 # CLI Usage
 
@@ -47,4 +57,6 @@ fi
 
 
 # Design & Implementation Considerations
+
+**Note**: I'm using Google Chrome, but virtually every modern browser has web debugging tools. Refer to the documentation for your browser's developer tools as you follow along!
 
