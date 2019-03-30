@@ -15,7 +15,7 @@ This project is intended for use with [NordVPN's CLI Linux client](https://suppo
     * **NOTE**: Obfuscated UDP is the default option.
 * Obfuscated VPN: Obfuscated TCP.
 
-Currently you must hardcode your configuration choice into the spider. To choose between them, you should modify line 18 of ``nordvpn_spider.py``:
+Currently you must hardcode your configuration choice into the spider. To choose between them, you should modify [line 18](https://github.com/Dyndrilliac/nordvpn-spider/blob/master/nordvpn_spider/spiders/nordvpn_spider.py#L18) of ``nordvpn_spider.py``:
 ```python
     def __init__(self, isSilent = False, obfuscated = True, udp = True):
 ```
