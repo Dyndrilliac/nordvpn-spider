@@ -7,13 +7,11 @@ class NordVPNSpider(scrapy.Spider):
     urls = [
             "https://nordvpn.com/wp-admin/admin-ajax.php?action=get_user_info_data",
             "https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_countries",
-            "https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations",
         ]
-    objects = [
-            None,
-            None,
-            None,
-        ]
+    special_country_ids = {
+            "UK":227,
+            "USA":228,
+        }
 
     def __init__(self, isSilent = False, obfuscated = True, udp = True):
         self.isSilent = isSilent
@@ -23,34 +21,32 @@ class NordVPNSpider(scrapy.Spider):
 
     def start_requests(self):
         for url in self.urls:
-            if url == "https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations":
-                new_url = self.construct_data_url(url)
-                yield scrapy.Request(url=new_url, callback=self.parse)
-            else:
-                yield scrapy.Request(url=url, callback=self.parse)
+            yield scrapy.Request(url=url, callback=self.parse)
 
-    def parse(self, response, retry = True):
+    def parse(self, response):
         if response.url == self.urls[0]:
             try:
                 # Construct get_user_info_data JSON object.
-                self.objects[0] = json.loads(response.text)
-                self.get_user_info_data = self.objects[0]
+                self.get_user_info_data = json.loads(response.text)
             except:
                 if self.isSilent == False:
                     print("Unexpected Error: ", sys.exc_info()[0])
+            finally:
+                return
         elif response.url == self.urls[1]:
             try:
                 # Construct servers_countries JSON object.
-                self.objects[1] = json.loads(response.text)
-                self.servers_countries = self.objects[1]
+                self.servers_countries = json.loads(response.text)
             except:
                 if self.isSilent == False:
                     print("Unexpected Error: ", sys.exc_info()[0])
+            finally:
+                yield scrapy.Request(url=self.construct_data_url(), callback=self.parse)
+                return
         else:
             try:
                 # Construct servers_recommendations JSON object.
-                self.objects[2] = json.loads(response.text)
-                self.servers_recommendations = self.objects[2]
+                self.servers_recommendations = json.loads(response.text)
                 self.optimal_server = self.servers_recommendations[0]["hostname"]
             except:
                 if self.isSilent == False:
@@ -58,8 +54,10 @@ class NordVPNSpider(scrapy.Spider):
             else:
                 if self.isSilent == False:
                     print(self.optimal_server)
+            finally:
+                return
 
-    def construct_data_url(self, url):
+    def construct_data_url(self):
         # This function supports the following NordVPN server options:
         #   Standard VPN: OpenVPN UDP and OpenVPN TCP.
         #       * Example UDP arg string in United States: "&filters={%22country_id%22:228,%22servers_groups%22:[11],%22servers_technologies%22:[3]}"
@@ -68,9 +66,8 @@ class NordVPNSpider(scrapy.Spider):
         #       * Example UDP arg string in United States: "&filters={%22country_id%22:228,%22servers_groups%22:[17],%22servers_technologies%22:[15]}"
         #       * Example TCP arg string in United States: "&filters={%22country_id%22:228,%22servers_groups%22:[17],%22servers_technologies%22:[17]}"
         # Initialize variables.
+        url = "https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations"
         country_id_arg = self.get_country_id()
-        servers_groups_arg = None
-        servers_techs_arg = None
         # Check for obfuscated VPN or standard VPN.
         if self.obfuscated == False:
             servers_groups_arg = 11
@@ -92,16 +89,19 @@ class NordVPNSpider(scrapy.Spider):
         new_url = url + arg_string
         # Return the modified url.
         return new_url
-    
+
     def get_country_id(self):
-        # Note some useful constants.
-        new_country_id = 227 # 227 = United Kingdom
-        new_country_id = 228 # 228 = United States of America
-        # Main algorithm
-        #
-        
-        #
-        # Pick country id.
-        country_id = new_country_id
-        #print(country_id)
-        return country_id
+        try:
+            country = self.get_user_info_data["location"].split(",")[0].strip()
+            for servers_country in self.servers_countries:
+                if country == servers_country["name"]:
+                    # Select the desired country id.
+                    country_id = servers_country["id"]
+        except:
+            if self.isSilent == False:
+                print("Unexpected Error: ", sys.exc_info()[0])
+            # Set a default value as a fall back option.
+            country_id = self.special_country_ids["USA"]
+        finally:
+            # Pick the country id.
+            return country_id
