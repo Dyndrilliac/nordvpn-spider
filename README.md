@@ -69,8 +69,8 @@ If you examine [the page on NordVPN's website](https://nordvpn.com/servers/tools
 
 Note that your optimal server hostname may not be the same as mine. Anyway, before we do anything we want to see if we can simply pull the information we want (the server's hostname) out of the page's HTML output. So right-click on the element's HTML code and copy the selector and XPath.
 
-Selector: ``#recommended > div > div > div:nth-child(2) > div.col-xs-12.col-sm-8.col-sm-offset-2.col-md-offset-0.col-md-6.mt-sm-7 > div > div > div.Card__body > div.py-10.px-6.text-center > div.js-RecommendedServerSection__card > h5``
-XPath: ``//*[@id="recommended"]/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div[2]/h5``
+* Selector: ``#recommended > div > div > div:nth-child(2) > div.col-xs-12.col-sm-8.col-sm-offset-2.col-md-offset-0.col-md-6.mt-sm-7 > div > div > div.Card__body > div.py-10.px-6.text-center > div.js-RecommendedServerSection__card > h5``
+* XPath: ``//*[@id="recommended"]/div/div/div[2]/div[1]/div/div/div[2]/div[1]/div[2]/h5``
 
 In a terminal window, run Scrapy's shell interpreter on the URL where the [the page on NordVPN's website](https://nordvpn.com/servers/tools/) is located:
 ```shell
