@@ -85,12 +85,10 @@ Now, if you try to grab the content we want from the page you will find that it 
 []
 ```
 
-What gives? The elements we want are created and populated dynamically by AJAX scripts running on the page behind the scenes. If you switch your browser's development tools to the ``Network`` tab and reload the page, you will see that the page relies on a pretty ridiculously long list of remote resources that need to be loaded at runtime. According to my browser, the page we're interested in makes a total of 109 requests which take a total of 12.71 seconds to finish loading and rendering! Fortunately, we only need to crawl a small subset of these resources. Since we know the data is populated using AJAX, we can eliminate a lot of items from consideration. While still in the ``Network`` tab of your browser's development tools, click on the filter labelled ``XHR``. XHR stands for ``XMLHttpRequest`` and is the core API behind AJAX. If you filter out all but the XHR requests, then that should cut our list down to ten different items. Here are the important ones:
+What gives? The elements we want are created and populated dynamically by AJAX scripts running on the page behind the scenes. If you switch your browser's development tools to the ``Network`` tab and reload the page, you will see that the page relies on a pretty ridiculously long list of remote resources that need to be loaded at runtime. According to my browser, the page we're interested in makes a total of 108 requests which take a total of 12.25 seconds to finish loading and rendering! Fortunately, we only need to crawl a small subset of these resources. Since we know the data is populated using AJAX, we can eliminate a lot of items from consideration. While still in the ``Network`` tab of your browser's development tools, click on the filter labelled ``XHR``. XHR stands for ``XMLHttpRequest`` and is the core API behind AJAX. If you filter out all but the XHR requests, then that should cut our list down to ten different items. Better still, later on we will find that we really only need three of them. Here is the list of resources we will actually crawl and use:
 ```
 https://nordvpn.com/wp-admin/admin-ajax.php?action=get_user_info_data
 https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_countries
-https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_groups
-https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_technologies
 https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations&filters={%22country_id%22:228,%22servers_groups%22:[11]}
 ```
 
