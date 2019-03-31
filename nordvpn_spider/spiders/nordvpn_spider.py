@@ -4,13 +4,68 @@ import sys
 
 class NordVPNSpider(scrapy.Spider):
     name = "nordvpn_spider"
-    urls = [
-            "https://nordvpn.com/wp-admin/admin-ajax.php?action=get_user_info_data",
-            "https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_countries",
-        ]
-    special_country_ids = {
-            "UK":227,
-            "USA":228,
+    url = "https://nordvpn.com/wp-admin/admin-ajax.php?action=get_user_info_data"
+    country_ids = {
+            "Albania":2,
+            "Argentina":10,
+            "Australia":13,
+            "Austria":14,
+            "Belgium":21,
+            "Bosnia and Herzegovina":27,
+            "Brazil":30,
+            "Bulgaria":33,
+            "Canada":38,
+            "Chile":43,
+            "Costa Rica":52,
+            "Croatia":54,
+            "Cyprus":56,
+            "Czech Republic":57,
+            "Denmark":58,
+            "Egypt":64,
+            "Estonia":68,
+            "Finland":73,
+            "France":74,
+            "Georgia":80,
+            "Germany":81,
+            "Greece":84,
+            "Hong Kong":97,
+            "Hungary":98,
+            "Iceland":99,
+            "India":100,
+            "Indonesia":101,
+            "Ireland":104,
+            "Israel":105,
+            "Italy":106,
+            "Japan":108,
+            "Latvia":119,
+            "Luxembourg":126,
+            "Malaysia":131,
+            "Mexico":140,
+            "Moldova":142,
+            "Netherlands":153,
+            "New Zealand":156,
+            "North Macedonia":128,
+            "Norway":163,
+            "Poland":174,
+            "Portugal":175,
+            "Romania":179,
+            "Serbia":192,
+            "Singapore":195,
+            "Slovakia":196,
+            "Slovenia":197,
+            "South Africa":200,
+            "South Korea":114,
+            "Spain":202,
+            "Sweden":208,
+            "Switzerland":209,
+            "Taiwan":211,
+            "Thailand":214,
+            "Turkey":220,
+            "Ukraine":225,
+            "United Arab Emirates":226,
+            "United Kingdom":227,
+            "United States":228,
+            "Vietnam":234,
         }
 
     def __init__(self, isSilent = False, obfuscated = True, udp = True):
@@ -22,13 +77,11 @@ class NordVPNSpider(scrapy.Spider):
         super(NordVPNSpider, self).__init__()
 
     def start_requests(self):
-        # For each URL in the list of URLs to crawl...
-        for url in self.urls:
-            # Crawl the URL and parse the results.
-            yield scrapy.Request(url=url, callback=self.parse)
+        # Crawl the get_user_info_data URL and parse the results.
+        yield scrapy.Request(url=self.url, callback=self.parse)
 
     def parse(self, response):
-        if response.url == self.urls[0]:
+        if response.url == self.url:
             try:
                 # Construct the get_user_info_data JSON object.
                 self.get_user_info_data = json.loads(response.text)
@@ -37,20 +90,9 @@ class NordVPNSpider(scrapy.Spider):
                 if self.isSilent == False:
                     print("Unexpected Error: ", sys.exc_info()[0])
             finally:
-                # Done parsing the first request.
-                return
-        elif response.url == self.urls[1]:
-            try:
-                # Construct the servers_countries JSON object.
-                self.servers_countries = json.loads(response.text)
-            except:
-                # Print error to standard output.
-                if self.isSilent == False:
-                    print("Unexpected Error: ", sys.exc_info()[0])
-            finally:
                 # Crawl the generated data URL using the responses to our previous queries and parse the results.
                 yield scrapy.Request(url=self.construct_data_url(), callback=self.parse)
-                # Done parsing the second request.
+                # Done parsing the first request.
                 return
         else:
             try:
@@ -100,18 +142,12 @@ class NordVPNSpider(scrapy.Spider):
         try:
             # Get the country in which we are currently located.
             country = self.get_user_info_data["location"].split(",")[0].strip()
-            # For each country in which there are VPN servers...
-            for servers_country in self.servers_countries:
-                # If our country matches on in the list...
-                if country == servers_country["name"]:
-                    # Select the desired country id.
-                    country_id = servers_country["id"]
+            # Select the desired country id.
+            country_id = self.country_ids[country]
         except:
             # Print error to standard output.
             if self.isSilent == False:
                 print("Unexpected Error: ", sys.exc_info()[0])
-            # Set a default value as a fall back option.
-            country_id = self.special_country_ids["USA"]
         finally:
             # Pick the appropriate country id.
             return country_id
