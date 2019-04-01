@@ -15,7 +15,7 @@ This project is intended for use with [NordVPN's CLI Linux client](https://suppo
     * **NOTE**: Obfuscated UDP is the default option!
 * Obfuscated VPN: Obfuscated TCP.
 
-Currently you must hardcode your configuration choice into the spider. To choose between them, you should modify [line 71](https://github.com/Dyndrilliac/nordvpn-spider/blob/master/nordvpn_spider/spiders/nordvpn_spider.py#L71) of ``nordvpn_spider.py``:
+Currently you must hardcode your configuration choices into the spider. To choose between them, you should modify [line 71](https://github.com/Dyndrilliac/nordvpn-spider/blob/master/nordvpn_spider/spiders/nordvpn_spider.py#L71) of ``nordvpn_spider.py``:
 ```python
     def __init__(self, isSilent = False, obfuscated = True, udp = True):
 ```
@@ -92,3 +92,70 @@ https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_countries
 https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations&filters={%22country_id%22:228,%22servers_groups%22:[11]}
 ```
 
+We can further reduce this list by replacing the second resource (the ``servers_countries`` JSON response) with a local data store, as seen below (and on [line 8 of nordvpn_spider.py](https://github.com/Dyndrilliac/nordvpn-spider/blob/master/nordvpn_spider/spiders/nordvpn_spider.py#L8)):
+```python
+    country_ids = {
+            "Albania":2,
+            "Argentina":10,
+            "Australia":13,
+            "Austria":14,
+            "Belgium":21,
+            "Bosnia and Herzegovina":27,
+            "Brazil":30,
+            "Bulgaria":33,
+            "Canada":38,
+            "Chile":43,
+            "Costa Rica":52,
+            "Croatia":54,
+            "Cyprus":56,
+            "Czech Republic":57,
+            "Denmark":58,
+            "Egypt":64,
+            "Estonia":68,
+            "Finland":73,
+            "France":74,
+            "Georgia":80,
+            "Germany":81,
+            "Greece":84,
+            "Hong Kong":97,
+            "Hungary":98,
+            "Iceland":99,
+            "India":100,
+            "Indonesia":101,
+            "Ireland":104,
+            "Israel":105,
+            "Italy":106,
+            "Japan":108,
+            "Latvia":119,
+            "Luxembourg":126,
+            "Malaysia":131,
+            "Mexico":140,
+            "Moldova":142,
+            "Netherlands":153,
+            "New Zealand":156,
+            "North Macedonia":128,
+            "Norway":163,
+            "Poland":174,
+            "Portugal":175,
+            "Romania":179,
+            "Serbia":192,
+            "Singapore":195,
+            "Slovakia":196,
+            "Slovenia":197,
+            "South Africa":200,
+            "South Korea":114,
+            "Spain":202,
+            "Sweden":208,
+            "Switzerland":209,
+            "Taiwan":211,
+            "Thailand":214,
+            "Turkey":220,
+            "Ukraine":225,
+            "United Arab Emirates":226,
+            "United Kingdom":227,
+            "United States":228,
+            "Vietnam":234,
+        }
+```
+
+This client-side dictionary will take a ``country`` and resolve a ``country_id`` much faster than querying the server script, downloading the result, parsing it with JSON, and searching it for a match to a given country string. Since we intend to undergo this process every time we log into our machine, we need to shave as much time off our clock as possible. I literally copy and pasted from the server's ``servers_countries`` response to construct this dictionary. All the data came from the server originally, we're just caching it for faster lookup times.

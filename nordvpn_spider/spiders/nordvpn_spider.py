@@ -91,7 +91,12 @@ class NordVPNSpider(scrapy.Spider):
                     print("Unexpected Error: ", sys.exc_info()[0])
             finally:
                 # Crawl the generated data URL using the responses to our previous queries and parse the results.
+                # Note that if you want to force a specific country id, this is the best place to do so. Simply provide a country string argument for construct_data_url().
                 yield scrapy.Request(url=self.construct_data_url(), callback=self.parse)
+                # Example of forcing the server to be in the United Kingdom:
+                #   yield scrapy.Request(url=self.construct_data_url("United Kingdom"), callback=self.parse)
+                # Example of forcing the server to be in the United States:
+                #   yield scrapy.Request(url=self.construct_data_url("United States"), callback=self.parse)
                 # Done parsing the first request.
                 return
         else:
@@ -112,7 +117,7 @@ class NordVPNSpider(scrapy.Spider):
                 # Done parsing the final request.
                 return
 
-    def construct_data_url(self):
+    def construct_data_url(self, country=None):
         # This function supports the following NordVPN server options:
         #   Standard VPN: OpenVPN UDP and OpenVPN TCP.
         #       * Example UDP arg string in United States: "&filters={%22country_id%22:228,%22servers_groups%22:[11],%22servers_technologies%22:[3]}"
@@ -120,6 +125,11 @@ class NordVPNSpider(scrapy.Spider):
         #   Obfuscated VPN: Obfuscated UDP and Obfuscated TCP.
         #       * Example UDP arg string in United States: "&filters={%22country_id%22:228,%22servers_groups%22:[17],%22servers_technologies%22:[15]}"
         #       * Example TCP arg string in United States: "&filters={%22country_id%22:228,%22servers_groups%22:[17],%22servers_technologies%22:[17]}"
+        # Determine country id.
+        if country == None:
+            country_id_arg = self.get_country_id()
+        else:
+            country_id_arg = self.get_country_id(country)
         # Check for obfuscated VPN or standard VPN.
         if self.obfuscated == False:
             servers_groups_arg = 11
@@ -136,14 +146,17 @@ class NordVPNSpider(scrapy.Spider):
             else:
                 servers_techs_arg = 17
         # Return the desired AJAX data URL.
-        return "https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations" + "&filters={%22country_id%22:" + str(self.get_country_id()) + ",%22servers_groups%22:[" + str(servers_groups_arg) + "],%22servers_technologies%22:[" + str(servers_techs_arg) + "]}"
+        return "https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations" + "&filters={%22country_id%22:" + str(country_id_arg) + ",%22servers_groups%22:[" + str(servers_groups_arg) + "],%22servers_technologies%22:[" + str(servers_techs_arg) + "]}"
 
-    def get_country_id(self):
+    def get_country_id(self, country=None):
         try:
-            # Get the country in which we are currently located.
-            country = self.get_user_info_data["location"].split(",")[0].strip()
-            # Select the desired country id.
-            country_id = self.country_ids[country]
+            if country == None:
+                # Get the country in which we are currently located.
+                country = self.get_user_info_data["location"].split(",")[0].strip()
+                # Select the desired country id.
+                country_id = self.country_ids[country]
+            else:
+                country_id = self.country_ids[country]
         except:
             # Print error to standard output.
             if self.isSilent == False:
