@@ -91,11 +91,12 @@ class NordVPNSpider(scrapy.Spider):
                     print("Unexpected Error: ", sys.exc_info()[0])
             finally:
                 # Crawl the generated data URL using the responses to our previous queries and parse the results.
-                # Note that if you want to force a specific country id, this is the best place to do so. Simply provide a country string argument for construct_data_url().
+                # Note that if you want to force the spider to return the optimal server in a specified country, this is the best place to do so.
+                # Simply provide a country string argument for construct_data_url().
                 yield scrapy.Request(url=self.construct_data_url(), callback=self.parse)
-                # Example of forcing the server to be in the United Kingdom:
+                # Example of forcing the spider to return the optimal server in the United Kingdom:
                 #   yield scrapy.Request(url=self.construct_data_url("United Kingdom"), callback=self.parse)
-                # Example of forcing the server to be in the United States:
+                # Example of forcing the spider to return the optimal server in the United States:
                 #   yield scrapy.Request(url=self.construct_data_url("United States"), callback=self.parse)
                 # Done parsing the first request.
                 return
