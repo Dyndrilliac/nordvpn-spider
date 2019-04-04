@@ -32,5 +32,16 @@ if [[ $isSilent != 1 ]] ; then
 	# Print the piece of the hostname we want to standard output.
 	echo "$server"
 fi
-# Finally, we can now connect to the desired NordVPN server.
-nordvpn c $server
+# Initialize NordVPN connectivity status variable for the first execution of the loop.
+status=$(eval "nordvpn status")
+while [[ $status = *Disconnected* ]]
+do
+	if [[ $isSilent != 1 ]] ; then
+		# Print the status of our connectivity to NordVPN via standard output.
+		echo $status
+	fi
+	# Finally, we can now connect to the desired NordVPN server.
+	nordvpn c $server
+	# Check for connectivity; if not connected, try again until a connection is established.
+	status=$(eval "nordvpn status")
+done

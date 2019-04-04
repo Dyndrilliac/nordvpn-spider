@@ -226,3 +226,4 @@ Here is the resulting algorithm for generating the desired data resource URL:
         # Return the desired AJAX data URL.
         return "https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations" + "&filters={%22country_id%22:" + str(country_id_arg) + ",%22servers_groups%22:[" + str(servers_groups_arg) + "],%22servers_technologies%22:[" + str(servers_techs_arg) + "]}"
 ```
+
