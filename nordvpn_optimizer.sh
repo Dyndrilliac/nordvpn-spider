@@ -34,14 +34,16 @@ if [[ $isSilent != 1 ]] ; then
 fi
 # Initialize NordVPN connectivity status variable for the first execution of the loop.
 status=$(eval "nordvpn status")
-while [[ $status = *Disconnected* ]]
+counter=1
+while [[ ( $status = *Disconnected* ) && ( $counter -le 15 ) ]]
 do
 	if [[ $isSilent != 1 ]] ; then
 		# Print the status of our connectivity to NordVPN via standard output.
-		echo $status
+		echo "$status => Connection attempt #$counter..."
 	fi
 	# Finally, we can now connect to the desired NordVPN server.
 	nordvpn c $server
 	# Check for connectivity; if not connected, try again until a connection is established.
 	status=$(eval "nordvpn status")
+	counter=$((++counter))
 done
