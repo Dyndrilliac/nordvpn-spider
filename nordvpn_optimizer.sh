@@ -20,7 +20,7 @@ result=$(eval "scrapy runspider --nolog $GITHUB/nordvpn-spider/nordvpn_spider/sp
 if [[ $isSilent != 1 ]] ; then
 	# Print the server to standard output.
 	# The spider would ordinarily do this by default, but we are capturing the spider's natural output for use in this script.
-	echo $result
+	echo "$result"
 fi
 # Note that the syntax for connecting via NordVPN's CLI Linux client is:
 # 	nordvpn c <country_code server_number>
